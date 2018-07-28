@@ -1,0 +1,104 @@
+@font-face {
+    font-family: 'Canaro-semibold';
+    src: url('../font/canaro-semibold-webfont.eot');
+    src: url('../font/canaro-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/canaro-semibold-webfont.woff') format('woff'),
+         url('../font/canaro-semibold-webfont.ttf') format('truetype'),
+         url('../font/canaro-semibold-webfont.svg#gotham-book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Muli-bold';
+    src: url('../font/muli-bold-webfont.eot');
+    src: url('../font/muli-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/muli-bold-webfont.woff') format('woff'),
+         url('../font/muli-bold-webfont.ttf') format('truetype'),
+         url('../font/muli-bold-webfont.svg#gotham-book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.accordion {
+  font-size: 1rem;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.accordion-header,
+.accordion-body {
+  background: white;
+}
+
+.accordion-header {
+  padding: 1.5em 1.5em;
+  background: #8ab848;
+  text-transform: uppercase;
+  color: white;
+  cursor: pointer;
+  font-size: .8em;
+  letter-spacing: .1em;
+  transition: all .3s;
+  font-family: "Canaro-semibold";
+}
+
+.accordion-header:hover {
+  background: #3a7f32;
+  position: relative;
+  z-index: 5;
+}
+
+.accordion-body {
+  background: #fcfcfc;
+  color: #3f3c3c;
+  font-family: "Muli-bold";
+  display: none;
+}
+
+.accordion-body__contents {
+  padding: 1.5em 1.5em;
+  font-size: .85em;
+}
+
+.accordion__item.active:last-child .accordion-header {
+  border-radius: none;
+}
+
+.accordion:first-child > .accordion__item > .accordion-header {
+  border-bottom: 1px solid transparent;
+}
+
+.accordion__item > .accordion-header:after {
+  content: url("../img/plus.png");
+  font-size: 1.2em;
+  float: right;
+  position: relative;
+  transition: .3s all;
+  transform: rotate(0deg);
+}
+
+.accordion__item.active > .accordion-header:after {
+  transform: rotate(-180deg);
+  content: url("../img/minus.png");
+}
+
+.accordion__item.active .accordion-header {
+  background: #3a7f32;
+}
+
+.accordion__item .accordion__item .accordion-header {
+  background: #f1f1f1;
+  color: black;
+}
+
+@media screen and (max-width: 1000px) {
+  body {
+    padding: 1em;
+  }
+  
+  .accordion {
+    width: 100%;
+  }
+}
