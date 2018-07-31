@@ -1,3 +1,3 @@
 <div>       
-	<strong>Copyright</strong> Hakiki &copy; {{ date('Y') }}      
+	<strong>Copyright</strong> Pembayaran SPP &copy; {{ date('Y') }}      
 </div>

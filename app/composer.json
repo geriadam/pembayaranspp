@@ -32,7 +32,9 @@
             "Tests\\": "tests/"
         },
          "files": [
-            "app/Helpers/Menu.php"
+            "app/Helpers/Menu.php",
+            "app/Helpers/Number.php",
+            "app/Helpers/CodeAuto.php"
         ]
     },
     "scripts": {

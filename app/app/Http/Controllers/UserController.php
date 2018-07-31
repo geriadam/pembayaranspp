@@ -27,6 +27,9 @@ class UserController extends Controller
      */
     public function login()
     {
+        if(Session::get('login')){
+            return redirect()->route('admin.home');
+        }
         return view('admin.login');
     }
 

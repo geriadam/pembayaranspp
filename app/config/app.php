@@ -242,6 +242,8 @@ return [
         'Datatables'    => Yajra\Datatables\Facades\Datatables::class,
         'Alert'         => UxWeb\SweetAlert\SweetAlert::class,
         'MenuHelper'    => App\Helpers\Menu::class,
+        'NumberHelper'  => App\Helpers\Number::class,
+        'CodeHelper'    => App\Helpers\CodeAuto::class,
         'Ekko'          => Laravelista\Ekko\Facades\Ekko::class
 
     ],
