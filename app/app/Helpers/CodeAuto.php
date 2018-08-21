@@ -32,4 +32,14 @@ class CodeAuto
 		
 		return $latestNumber;
 	}
+
+	public static function createAcronym($string) {
+	    $output = null;
+	    $token  = strtok($string, ' ');
+	    while ($token !== false) {
+	        $output .= $token[0];
+	        $token = strtok(' ');
+	    }
+	    return $output;
+	}
 }

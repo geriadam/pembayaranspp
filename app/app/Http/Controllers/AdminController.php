@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Santri;
+use App\Transaction;
+use Carbon\Carbon;
+use DateHelper;
+use Chart;
 
 class AdminController extends Controller
 {
@@ -13,7 +18,38 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.home');
+
+        $countDateNowSantri      = Santri::whereDate('created_at', '=', Carbon::today()->toDateString())->count();
+        $countDateNowTransaction = Transaction::whereDate('transaction_date', '=', Carbon::today()->toDateString())->count();
+
+        $santri      = Santri::getDataThisWeek();
+        $transaction = Transaction::getDataThisWeek();
+
+        $chartSantri = Chart::title(["text" => "Jumlah Pendaftar Santri Minggu Ini"])
+                            ->chart(["type" => "column", "renderTo" => "chartSantri"])
+                            ->xaxis(["categories" => $santri['categories']])
+                            ->tooltip(["split" => true, "valueSuffix" => " Santri"])
+                            ->yaxis(["title" => ["text" => "Jumlah Santri"]])
+                            ->series([
+                                [
+                                    "name" => "Jumlah Santri",
+                                    "data" => $santri["series"]
+                                ]
+                            ])->display();
+
+        $chartTransaction = Chart::title(["text" => "Jumlah Transaksi Mingguan"])
+                            ->chart(["type" => "line", "renderTo" => "chartTransaction"])
+                            ->xaxis(["categories" => $transaction['categories']])
+                            ->tooltip(["split" => true, "valueSuffix" => ""])
+                            ->yaxis(["title" => ["text" => "Jumlah Transaksi"]])
+                            ->series([
+                                [
+                                    "name" => "Jumlah Transaksi",
+                                    "data" => $transaction["series"]
+                                ]
+                            ])->display();
+
+        return view('admin.home', compact('countDateNowSantri','countDateNowTransaction', 'chartSantri','chartTransaction'));
     }
 
     /**

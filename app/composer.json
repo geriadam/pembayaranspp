@@ -6,10 +6,12 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "barryvdh/laravel-dompdf": "^0.8.2",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
         "laravelista/ekko": "^1.5",
+        "muhamadrezaar/highcharts": "dev-master",
         "unisharp/laravel-ckeditor": "^4.7",
         "uxweb/sweet-alert": "^1.4",
         "yajra/laravel-datatables-oracle": "^7.10"
@@ -34,7 +36,8 @@
          "files": [
             "app/Helpers/Menu.php",
             "app/Helpers/Number.php",
-            "app/Helpers/CodeAuto.php"
+            "app/Helpers/CodeAuto.php",
+            "app/Helpers/Date.php"
         ]
     },
     "scripts": {

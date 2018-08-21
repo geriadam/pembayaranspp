@@ -36,10 +36,24 @@ class Menu
 				'visible' 	=> true,
 			),
 			array(
+				'label' 	=> 'Laporan',
+				'url' 		=> 'admin.report.index',
+				'icon' 		=> 'file-text-o',
+				'active' 	=> '',
+				'visible' 	=> true,
+			),
+			array(
 				'label' 	=> 'User',
 				'url' 		=> 'admin.user.index',
 				'icon' 		=> 'user',
 				'active' 	=> \Ekko::isActiveRoute('admin.user.*') ? true : false,
+				'visible' 	=> true,
+			),
+			array(
+				'label' 	=> 'Pengaturan',
+				'url' 		=> 'admin.pesantrenprofile.index',
+				'icon' 		=> 'cogs',
+				'active' 	=> \Ekko::isActiveRoute('admin.pesantrenprofile.*') ? true : false,
 				'visible' 	=> true,
 			),
 		);

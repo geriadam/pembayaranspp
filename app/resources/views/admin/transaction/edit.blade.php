@@ -15,6 +15,19 @@
   </div>
 @endif
 <div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <a href="{{ route('admin.transaction.index') }}">
+                    <button type="button" class="btn btn-info btn-raised"><span class="glyphicon glyphicon-triangle-left"></span> 
+                      Back
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
   <div class="col-lg-12">
     {{ Form::open(['route' => ['admin.paymenttype.update', $paymenttype->payment_type_id], 'method' => "PUT", "files" => TRUE]) }}
     <div class="ibox float-e-margins">

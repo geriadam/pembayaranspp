@@ -15,6 +15,19 @@
   </div>
 @endif
 <div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <a href="{{ route('admin.santri.index') }}">
+                    <button type="button" class="btn btn-info btn-raised"><span class="glyphicon glyphicon-triangle-left"></span> 
+                      Back
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
   <div class="col-lg-12">
     {{ Form::open(['route' => ['admin.santri.update', $santri->santri_id], 'method' => "PUT", "files" => TRUE]) }}
     <div class="ibox float-e-margins">
@@ -26,6 +39,10 @@
         </div>
       </div>
       <div class="ibox-content">
+        <div class="form-group">
+            <strong>Nomor Santri:</strong>
+            {!! Form::text('santri_number', $santri->santri_number, ["class" => "form-control"]) !!}
+        </div>
         <div class="form-group">
             <strong>Nama Santri:</strong>
             {!! Form::text('santri_name', $santri->santri_name, ["class" => "form-control"]) !!}

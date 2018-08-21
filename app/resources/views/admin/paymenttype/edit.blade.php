@@ -15,6 +15,19 @@
   </div>
 @endif
 <div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <a href="{{ route('admin.paymenttype.index') }}">
+                    <button type="button" class="btn btn-info btn-raised"><span class="glyphicon glyphicon-triangle-left"></span> 
+                      Back
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
   <div class="col-lg-12">
     {{ Form::open(['route' => ['admin.paymenttype.update', $paymenttype->payment_type_id], 'method' => "PUT", "files" => TRUE]) }}
     <div class="ibox float-e-margins">
@@ -26,6 +39,12 @@
         </div>
       </div>
       <div class="ibox-content">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <i>* Jika Pembyaran SPP Tulis (SPP/Spp/spp) saja</i>
+        </div>
         <div class="form-group">
             <strong>Nama Pembayaran</strong>
             {!! Form::text('payment_type_name', $paymenttype->payment_type_name , ["class" => "form-control"]) !!}

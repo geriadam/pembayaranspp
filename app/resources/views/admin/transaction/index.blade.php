@@ -21,10 +21,10 @@
                             <tr>
                                 <th>No</th>
                                 <th width="20%">Nama Santri</th>
-                                <th width="20%">No Transaksi</th>
+                                <th width="15%">No Transaksi</th>
                                 <th width="20%">Tanggal Transaksi</th>
                                 <th width="30%">Total</th>
-                                <th width="30%">Action</th>
+                                <th width="35%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,8 +36,11 @@
                                     <td>{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d M Y') }}</td>
                                     <td>{{ NumberHelper::format_uang($transaction->transaction_total) }}</td>
                                     <td>
-                                        <a href="#">
-                                            <span class="btn btn-warning dim btn-sm glyphicon glyphicon-pencil disabled" disabled></span>
+                                        <a href="{{ route('admin.transaction.show', ['id' => $transaction->transaction_id]) }}" class="buttonShow">
+                                            <span class="btn btn-info dim btn-sm glyphicon glyphicon-eye-open"></span>
+                                        </a>
+                                        <a target="_blank" href="{{ route('admin.transaction.print', ['id' => $transaction->transaction_id]) }}">
+                                            <span class="btn btn-primary dim btn-sm glyphicon glyphicon-print"></span>
                                         </a>
                                         <a href="{{ route('admin.transaction.destroy', ['id' => $transaction->transaction_id]) }}" id="delete-btn">
                                             <span class="btn btn-danger dim btn-sm glyphicon glyphicon-remove-sign"></span>
@@ -52,4 +55,22 @@
         </div>
     </div>
 </div> 
+<div class="modal fade" id="modalTransaction" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" id="modalShow">
+    </div>
+  </div>
+</div>
+
+<script src="{{ url('js/jquery.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        $(".buttonShow").click(function(e){
+            e.preventDefault();      
+            $('#modalTransaction').modal('show')
+                       .find('#modalShow')
+                       .load($(this).attr('href'));  
+        });
+    });
+</script>
 @endsection

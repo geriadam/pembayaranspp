@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DateHelper;
+use Carbon\Carbon;
 
 class Santri extends Model
 {
@@ -13,6 +15,7 @@ class Santri extends Model
     const active     = 0;
     const deactive   = 1;
     protected $fillable    = [
+                                "santri_number",
                                 "santri_name",
                                 "santri_nick_name",
                                 "santri_birth_place",
@@ -31,6 +34,7 @@ class Santri extends Model
     public static function rules()
     {
     	return [
+            'santri_number'               => 'required',
             'santri_name'               => 'required',
             'santri_nick_name'          => 'required',
             'santri_birth_place'        => 'required',
@@ -49,6 +53,7 @@ class Santri extends Model
     public static function message()
     {
         return [
+            'santri_number.required'            => 'Nomor santri harus di isi',
         	'santri_name.required'               => 'Nama santri harus di isi',
             'santri_nick_name.required'          => 'Nama panggilan harus di isi',
             'santri_birth_place.required'        => 'Tempat lahir harus di isi',
@@ -72,5 +77,31 @@ class Santri extends Model
             "man" => "Laki - Laki",
             "woman" => "Perempuan",
         ];
+    }
+
+    public static function getDataThisWeek()
+    {
+        $fromDate  = DateHelper::rangeWeek(Carbon::today()->toDateString())['start'];
+        $toDate    = DateHelper::rangeWeek(Carbon::today()->toDateString())['end'];
+        $weekrange = DateHelper::getDatesFromRange($fromDate,$toDate);
+
+        $categories = ["Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu","Minggu"];
+        $series     = [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0];
+
+        for($i = 0; $i <= 6; $i++){
+            $santri    = Self::whereDate('created_at', '>=', $fromDate)->whereDate('created_at', '<=', $toDate)->get();
+
+            if(!empty($santri)){
+                foreach ($santri as $val) {
+                    $createdAt = date('Y-m-d', strtotime($val->created_at)); 
+
+                    if($createdAt == $weekrange[$i]){
+                        $series[$i] += 1;
+                    }
+                }
+            }
+        }
+
+        return ["categories" => $categories, "series" => $series];
     }
 }

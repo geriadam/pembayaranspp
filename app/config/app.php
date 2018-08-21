@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -188,6 +188,10 @@ return [
         UxWeb\SweetAlert\SweetAlertServiceProvider::class,
         // Active non active menu
         Laravelista\Ekko\EkkoServiceProvider::class,
+        // Domp PDF
+        Barryvdh\DomPDF\ServiceProvider::class,
+        // Highchart
+        RezaAr\Highcharts\Provider::class,
 
     ],
 
@@ -244,8 +248,10 @@ return [
         'MenuHelper'    => App\Helpers\Menu::class,
         'NumberHelper'  => App\Helpers\Number::class,
         'CodeHelper'    => App\Helpers\CodeAuto::class,
-        'Ekko'          => Laravelista\Ekko\Facades\Ekko::class
-
+        'DateHelper'    => App\Helpers\Date::class,
+        'Ekko'          => Laravelista\Ekko\Facades\Ekko::class,
+        'PDF'           => Barryvdh\DomPDF\Facade::class,
+        'Chart'         => RezaAr\Highcharts\Facade::class,
     ],
 
 ];

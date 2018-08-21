@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use App\User;
+use App\PesantrenProfile;
 
 class UserController extends Controller
 {   
@@ -27,10 +28,12 @@ class UserController extends Controller
      */
     public function login()
     {
+        $profile = PesantrenProfile::first();
+
         if(Session::get('login')){
             return redirect()->route('admin.home');
         }
-        return view('admin.login');
+        return view('admin.login', compact('profile'));
     }
 
     /**
@@ -66,6 +69,22 @@ class UserController extends Controller
         return redirect()->route('admin.login')->with('alert', 'Logout');
     }
 
+    public function create()
+    {
+        return view("admin.user.create");
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->except('_token'), User::rules(), User::message());
+        if ($validator->fails()) 
+            return redirect()->route('admin.user.create')->withErrors($validator)->withInput(); 
+
+        $request->request->add(["password" => bcrypt($request->password)]);
+        $model = User::create($request->except('_token'));
+        return redirect()->route('admin.user.index');
+    }
+
     public function edit($id)
     {
         $model = User::findOrFail($id);
@@ -85,7 +104,12 @@ class UserController extends Controller
 
         $request->request->add(["password" => bcrypt($request->password)]);
         $model = User::find($id)->update($request->except('_token'));
-        return redirect()->route('admin.logout');
+
+        $email = User::find($id)->email;
+        if($email == Session::get('email')){
+            return redirect()->route('admin.logout');
+        }
+        return redirect()->route('admin.user.index');
     }
 
     /*public function registerPost(Request $request){

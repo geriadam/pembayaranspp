@@ -2,7 +2,7 @@
 <html lang="ind">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ env('APP_NAME','') }}</title>
+    <title>Pembayaran Spp</title>
     @include('includes.head')
 </head>
 <body>

@@ -1,19 +1,11 @@
-@extends('layouts.default')
+@extends('layouts.login')
 @section('content')
-<div class="site-error">
-
-    <h1>Error</h1>
-
-    <div class="alert alert-danger">
-        Error Site
+<div class="middle-box text-center animated fadeInDown">
+    <h1>404</h1>
+    <h3 class="font-bold">Page Not Found</h3>
+    <div class="error-desc">
+        Sorry, but the page you are looking for has note been found. Try checking the URL for error, then hit the refresh button on your browser or try found something else in our app.
     </div>
-
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
-
+    <div><a href="{{ route('admin.home') }}">Return Home</a></div>
 </div>
 @endsection
