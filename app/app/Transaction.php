@@ -31,9 +31,19 @@ class Transaction extends Model
     	];
     } 
 
+    public function transactionitem()
+    {
+        return $this->hasMany(TransactionItem::class, 'transaction_id', 'transaction_id');
+    }
+
     public function santri()
     {
     	return $this->belongsTo('App\Santri', 'santri_id', 'santri_id');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_deleted', self::active);
     }
 
     public static function dropdownSantri()

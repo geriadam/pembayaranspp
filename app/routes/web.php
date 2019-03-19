@@ -23,6 +23,8 @@ Route::group(['prefix' => 'admin'], function(){
 	Route::get('/logout', 'UserController@logout')->name('admin.logout');
 	Route::post('/loginPost', 'UserController@loginPost')->name('admin.loginPost');
 
+	Route::get('/register', 'UserController@registerPost')->name('admin.registerPost');
+
 	// Route Menu Santri
 	Route::group(['prefix' => 'santri', 'middleware' => 'checkLogin'], function(){
 		Route::get('/', 'SantriController@index')->name('admin.santri.index');
@@ -62,12 +64,20 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('/print/{id}', 'TransactionController@printPdf')->name('admin.transaction.print');
 	});
 
-	// Route Pesantren Profile
+	// Route Laporan
 	Route::group(["prefix" => "laporan", "middleware" => "checkLogin"], function()
 	{
 	    Route::get('/', 'ReportController@index')->name("admin.report.index");
-	    Route::get('/search', 'ReportController@search')->name("admin.report.search");
-	    Route::get('/export', 'ReportController@export')->name("admin.report.export");
+
+	    // Report Santri
+	    Route::get('/santri', 'ReportController@santri')->name('admin.report.santri.index');
+	    Route::get('/santri/search', 'ReportController@santriSearch')->name('admin.report.santri.search');
+	    Route::get('/santri/export', 'ReportController@santriExport')->name('admin.report.santri.export');
+
+	    // Report Transaksi
+	    Route::get('/transaksi', 'ReportController@transaksi')->name('admin.report.transaksi.index');
+	    Route::get('/transaksi/search', 'ReportController@transaksiSearch')->name('admin.report.transaksi.search');
+	    Route::get('/transaksi/export', 'ReportController@transaksiExport')->name('admin.report.transaksi.export');
 	});
 
 	// Route Menu User

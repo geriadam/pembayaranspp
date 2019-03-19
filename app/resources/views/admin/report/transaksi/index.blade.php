@@ -6,7 +6,7 @@
             <div class="ibox-title">
                 Filter
             </div>
-            {{ Form::open(['route' => 'admin.report.search', 'method' => 'GET']) }}
+            {{ Form::open(['route' => 'admin.report.transaksi.search', 'method' => 'GET']) }}
             <div class="ibox-content">
                 <div class="form-group">
                     <strong>Nama Santri:</strong>
@@ -38,7 +38,7 @@
     <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">
-                <a href="{{ route('admin.report.export') }}" target="_blank">
+                <a href="{{ route('admin.report.transaksi.export') }}" target="_blank">
                     <button type="button" class="btn btn-primary">Export</button>
                 </a>
             </div>

@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function index()
     {
 
-        $countDateNowSantri      = Santri::whereDate('created_at', '=', Carbon::today()->toDateString())->count();
+        $countDateNowSantri      = Santri::active()->whereDate('created_at', '=', Carbon::today()->toDateString())->count();
         $countDateNowTransaction = Transaction::whereDate('transaction_date', '=', Carbon::today()->toDateString())->count();
 
         $santri      = Santri::getDataThisWeek();
@@ -28,7 +28,6 @@ class AdminController extends Controller
         $chartSantri = Chart::title(["text" => "Jumlah Pendaftar Santri Minggu Ini"])
                             ->chart(["type" => "column", "renderTo" => "chartSantri"])
                             ->xaxis(["categories" => $santri['categories']])
-                            ->tooltip(["split" => true, "valueSuffix" => " Santri"])
                             ->yaxis(["title" => ["text" => "Jumlah Santri"]])
                             ->series([
                                 [
@@ -40,7 +39,6 @@ class AdminController extends Controller
         $chartTransaction = Chart::title(["text" => "Jumlah Transaksi Mingguan"])
                             ->chart(["type" => "line", "renderTo" => "chartTransaction"])
                             ->xaxis(["categories" => $transaction['categories']])
-                            ->tooltip(["split" => true, "valueSuffix" => ""])
                             ->yaxis(["title" => ["text" => "Jumlah Transaksi"]])
                             ->series([
                                 [
@@ -50,71 +48,5 @@ class AdminController extends Controller
                             ])->display();
 
         return view('admin.home', compact('countDateNowSantri','countDateNowTransaction', 'chartSantri','chartTransaction'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

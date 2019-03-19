@@ -55,26 +55,79 @@
         </div>
       </div>
       <div class="ibox-content">
-        <button type="button" class="btn btn-success btn-add">Tambah (F2)</button>
+        <label>Tahun</label>
+        {!! Form::selectYear('transaction_year', date('Y', strtotime("-2 Year")), date('Y', strtotime("+2 year")), date('Y'), ['class' => 'form-control']) !!}
         <table class="table table-stripped table-transaction">
           <thead>
-              <th>No</th>
-              <th>Jenis Pembayaran</th>
-              <th>Harga</th>
-              <th>Aksi</th>
-          </thead>
-          <tbody id="newClone">
-          </tbody>
-          <tfoot>
               <tr>
-                  <td></td>
-                  <td>Total Akhir</td>
-                  <td><p id="label-transaction-total">Rp 0</p>
-                      {!! Form::hidden('transaction_total', null, array('class' => 'form-control row-transaction-total')) !!}
-                  </td>
-                  <td>&nbsp;</td>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Jenis Pembayaran</th>
+                <th colspan="12">Bulan</th>
               </tr>
-          </tfoot>
+              <tr>
+                <th>Januari</th>
+                <th>Februari</th>
+                <th>Maret</th>
+                <th>April</th>
+                <th>Mei</th>
+                <th>Juni</th>
+                <th>Juli</th>
+                <th>Agustus</th>
+                <th>September</th>
+                <th>Oktober</th>
+                <th>November</th>
+                <th>Desember</th>
+              </tr>
+          </thead>
+          <tbody>
+            @foreach($paymentType as $no => $payment)
+              <tr>
+                <td>
+                  {{ ++$no }}
+                </td>
+                <td>
+                  {!! Form::hidden('payment_type_id[]', $payment->payment_type_id, ["class" => "form-control"]) !!}
+                  {!! Form::text('payment_type_name[]', $payment->payment_type_name, ["class" => "form-control"]) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 1, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 2, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 3, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 4, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 5, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 6, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 7, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 8, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 9, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 10, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 11, false) !!}
+                </td>
+                <td>
+                  {!! Form::checkbox("transaction_month[$payment->payment_type_id][]", 12, false) !!}
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
       </table>
       </div>
       <div class="ibox-content">
@@ -85,120 +138,6 @@
     {!! Form::close() !!}
   </div>
 </div>
-<script src="{{ url('js/jquery.min.js') }}"></script>
-<script>
-var i = 0;
-
-function rearrangeRowNumber()
-{
-  $(".row-number").each(function(index){
-    $(this).html(parseInt(index+1));
-  });
-}
-
-function countSetTotal()
-{
-    var transactionTotal=0;
-    $('.table-transaction td .price').each(function() {
-        if ($(this).val() != ""){
-            transactionTotal += parseFloat($(this).val());
-        }
-    });
-    $(".row-transaction-total").val(transactionTotal);
-    $("#label-transaction-total").html("Rp "+formatNumber(transactionTotal));
-}
-
-function getPaymentType(){
-  showPaymentType   = "";
-  var paymentType = <?php echo json_encode($paymenttype); ?>;  
-  for(var key in paymentType) {
-      if(paymentType.hasOwnProperty(key)){
-          var showPaymentType = showPaymentType + "<option value='"+key+"' class='form-control'>"+paymentType[key]+"</option>";
-      }
-  }
-  return showPaymentType;
-}
-
-function formatNumber(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function addRow() 
-{
-    i++;
-    var paymentType = getPaymentType();
-    var add = '\n\
-    <tr id="row-'+i+'" class="row-item"> \n\
-      <td class="row-number"></td> \n\
-      <td><select name="payment_type_id[]" class="form-control paymentType" data-item-id="'+i+'">';
-        add = add + paymentType;
-        add = add + '</select>\n\
-        <br>\n\
-        <div style="display:none" id="divMonth-'+i+'"> \n\
-          <strong>Bulan</strong>\n\
-          {!! Form::select("transaction_month[]",$month, date('m'), ["class" => "form-control", "id" => "i-month-'+i+'"]) !!}\n\
-        </div> \n\
-        <br>\n\
-        <div style="display:none" id="divYear-'+i+'"> \n\
-          <strong>Tahun</strong>\n\
-          {!! Form::select("transaction_year[]",$year, date('Y'), ["class" => "form-control", "id" => "i-year-'+i+'"]) !!}\n\
-        </div> \n\
-      </td> \n\
-      <td><p id="label-price-'+i+'"></p>\n\
-          <input type="hidden" id="input-type-month-'+i+'">\n\
-          <input name="transaction_price[]" type="hidden" class="price" value="" id="input-price-'+i+'"></td>\n\
-      <td><button class="btn btn-danger btn_remove" id="'+i+'" type="button">\n\
-            <span class="glyphicon glyphicon-trash"></span>\n\
-          </button></td>\n\
-    </tr>';
-    $('#newClone').append(add);
-    rearrangeRowNumber();
-}
-
-$(document).on("change", ".paymentType", function(){
-  var index = $(this).attr('data-item-id');
-  var value = $(this).val();
-  $.get("../transaksi/payment/"+value+"", function(data){
-    $("#label-price-"+index+"").html("Rp "+formatNumber(data.payment_type_price));
-    $("#input-price-"+index+"").val(data.payment_type_price);
-    $("#input-type-month-"+index+"").val(data.payment_type_unit);
-    countSetTotal();
-
-    var label = $("#input-type-month-"+index+"").val();
-    console.log(label)
-    if(label == 'month'){
-      $("#divMonth-"+index).css('display', 'block');
-      $("#divYear-"+index).css('display', 'block');
-
-      $("#i-month-"+index).focus();
-    } else {
-      $("#divMonth-"+index).css('display', 'none');
-      $("#divYear-"+index).css('display', 'none');
-    }
-  });
-});
-
-
-// Untuk Tombol Add dan Remove
-$(".btn-add").click(function(){
-  addRow();
-});
-
-$(document).on('click','.btn_remove', function(){
-    var id = $(this).attr("id");
-    $("#row-"+id+"").remove();
-
-    rearrangeRowNumber();
-    countSetTotal();
-});
-
-$(document).keydown(function(event) {
-    if(event.which == 113) { //F2
-        $(".btn-add").trigger("click")
-    }
-});
-
-</script>
 @endsection
 
 

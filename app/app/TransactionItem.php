@@ -33,6 +33,11 @@ class TransactionItem extends Model
                             ->orderBy('payment_type_name')->pluck('payment_type_name', 'payment_type_id');
     }
 
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'transaction_id');
+    }
+
     public function paymenttype()
     {
         return $this->belongsTo('App\PaymentType', 'payment_type_id', 'payment_type_id');

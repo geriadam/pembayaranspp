@@ -31,13 +31,15 @@ class PaymentType extends Model
         ];
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_deleted', self::active);
+    }
 
     public static function dropdownUnit()
     {
         return [
-            "day" => "Harian",
             "month" => "Bulanan",
-            "year" => "Tahunan",
         ];
     }
 }

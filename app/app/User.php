@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Route;
 
 class User extends Authenticatable
 {
@@ -30,11 +31,25 @@ class User extends Authenticatable
 
     public static function rules()
     {
+        switch(Route::getCurrentRoute()->getActionMethod())
+        {
+            case 'store':
+                return [
+                    'name'                  => 'required|string',
+                    'email'                 => 'required|email',
+                    'password'              => 'min:6|required_with:password_confirmation|same:password_confirmation',
+                    'password_confirmation' => 'min:6'
+                ];
+            case 'update':
+                return [
+                    'name'                  => 'required|string',
+                    'email'                 => 'required|email',
+                ];
+            default:break;
+        }
+
         return [
-            'name'                  => 'required|string',
-            'email'                 => 'required|email',
-            'password'              => 'min:6|required_with:password_confirmation|same:password_confirmation',
-            'password_confirmation' => 'min:6'
+            
         ];
     }
     public static function message()

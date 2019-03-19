@@ -45,14 +45,14 @@ class Menu
 			array(
 				'label' 	=> 'User',
 				'url' 		=> 'admin.user.index',
-				'icon' 		=> 'user',
+				'icon' 		=> 'users',
 				'active' 	=> \Ekko::isActiveRoute('admin.user.*') ? true : false,
 				'visible' 	=> true,
 			),
 			array(
-				'label' 	=> 'Pengaturan',
+				'label' 	=> 'Profil',
 				'url' 		=> 'admin.pesantrenprofile.index',
-				'icon' 		=> 'cogs',
+				'icon' 		=> 'user',
 				'active' 	=> \Ekko::isActiveRoute('admin.pesantrenprofile.*') ? true : false,
 				'visible' 	=> true,
 			),

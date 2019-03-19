@@ -22,7 +22,8 @@
                                 <th>No</th>
                                 <th width="20%">Nama Santri</th>
                                 <th width="20%">Tempat, Tanggal Lahir</th>
-                                <th width="40%">Jenis Kelamin</th>
+                                <th width="20%">Jenis Kelamin</th>
+                                <th width="20%">No Telepon Ortu</th>
                                 <th width="20%">Action</th>
                             </tr>
                         </thead>
@@ -35,11 +36,12 @@
                                         {{ \Carbon\Carbon::parse($santri->santri_birth_date)->format("d M Y") }}
                                     </td>
                                     <td>{{ $santri->santri_gender == 'man' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                                    <td>{{ $santri->santri_parent_telephone }}</td>
                                     <td>
                                         <a href="{{ route('admin.santri.show', ['id' => $santri->santri_id]) }}" class="buttonShow">
                                             <span class="btn btn-primary dim btn-sm glyphicon glyphicon-eye-open"></span>
                                         </a>
-                                        <a href="#" class="buttonDetail" data-id="{{ $santri->santri_id }}">
+                                        <a href="{{ route('admin.santri.detail', ['id' => $santri->santri_id]) }}">
                                             <span class="btn btn-info dim btn-sm glyphicon glyphicon-tags"></span>
                                         </a>
                                         <a href="{{ route('admin.santri.edit', ['id' => $santri->santri_id]) }}">
@@ -58,119 +60,4 @@
         </div>
     </div>
 </div> 
-
-<div class="modal fade" id="modalSantri" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" id="modalShow">
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalSpp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header btn-primary">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title" id="myModalLabel">Detail</h4>
-        </div>
-        <div class="modal-body" id="modalDetail">
-            <div class="ibox float-e-margins">
-              <div class="ibox-title">
-                Info
-              </div>
-              <div class="ibox-content">
-                <div class="form-group">
-                    {!! Form::select("year_select",$year, "", ["class" => "form-control year_search", "data-id" => ""]) !!}
-                </div> 
-                <table class="table table-responsive table-striped">
-                    <thead>
-                        <tr>
-                            <th>Bulan</th>
-                            <th>Tahun</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-santri-detail"></tbody>
-                </table>
-              </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-    </div>
-  </div>
-</div>
-
-<script src="{{ url('js/jquery.min.js') }}"></script>
-<script>
-
-    function reset_modal()
-    {
-        $(".table-santri-detail").empty();
-    }
-
-    $(document).ready(function(){
-        $(".buttonShow").click(function(e){
-            e.preventDefault();      
-            $('#modalSantri').modal('show')
-                       .find('#modalShow')
-                       .load($(this).attr('href'));  
-        });
-    });
-
-    $(document).ready(function(){
-        var i;
-        $(".buttonDetail").click(function(e){
-            var id_data = $(this).attr('data-id');
-            var url     = "{{ url("admin/santri/detail/") }}";
-            var html   = "";
-            $.ajax({
-              type: "GET", 
-              url: url+"/"+id_data,
-              dataType: 'json',
-              success: function(data){
-                reset_modal();
-                for(i = 0; i < data.data.length; i++){
-                    html += "<tr><td>"+data.data[i].month+"</td><td>"+data.data[i].year+"</td></tr>";
-                }
-
-                if(data.data.length == 0){
-                    html += "<tr><td colspan='2'>Data tidak ada</td></tr>";
-                }
-
-                $(".table-santri-detail").html(html);
-                $(".year_search").attr("data-id", data.santri_id)
-                $('#modalSpp').modal('show')
-              }
-            });
-        }); 
-    });
-
-    $(".year_search").change(function(){
-        var i;
-        var year    = $(this).val();
-        var html    = "";
-        var id_data = $(this).attr('data-id');
-        var url     = "{{ url("admin/santri/detail/") }}";
-        $.ajax({
-          type: "GET", 
-          url: url+"/"+id_data+"/"+year,
-          dataType: 'json',
-          success: function(data){
-            reset_modal();
-            for(i = 0; i < data.data.length; i++){
-                    html += "<tr><td>"+data.data[i].month+"</td><td>"+data.data[i].year+"</td></tr>";
-                }
-
-            if(data.data.length == 0){
-                    html += "<tr><td colspan='2'>Data tidak ada</td></tr>";
-                }
-            
-            $(".table-santri-detail").html(html);
-          }
-        });
-    });
-</script>
 @endsection

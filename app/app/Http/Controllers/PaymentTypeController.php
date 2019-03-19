@@ -17,7 +17,7 @@ class PaymentTypeController extends Controller
      */
     public function index()
     {
-        $model = PaymentType::where("is_deleted", PaymentType::active)->get();
+        $model = PaymentType::active()->get();
         return view('admin.paymenttype.index', compact('model'));
     }
 
@@ -52,7 +52,7 @@ class PaymentTypeController extends Controller
      */
     public function edit($id)
     {
-        $paymenttype  = PaymentType::where("payment_type_id", $id)->where("is_deleted", "=", PaymentType::active)->firstOrFail();
+        $paymenttype  = PaymentType::where("payment_type_id", $id)->active()->firstOrFail();
         $unit         = PaymentType::dropdownUnit();
 
         if($paymenttype){
@@ -83,7 +83,7 @@ class PaymentTypeController extends Controller
      */
     public function destroy($id)
     {
-        $paymenttype = PaymentType::where("payment_type_id", $id)->where("is_deleted", "=", PaymentType::active)->firstOrFail();
+        $paymenttype = PaymentType::where("payment_type_id", $id)->active()->firstOrFail();
         if($paymenttype){
             PaymentType::where("payment_type_id", $id)->update(["is_deleted" => PaymentType::deactive]);
             return redirect()->route('admin.paymenttype.index');

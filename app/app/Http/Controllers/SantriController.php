@@ -25,7 +25,7 @@ class SantriController extends Controller
         for ($i = date('Y'); $i >= date('Y') - 10; $i--){
             $year[$i] = $i;
         }
-        $model = Santri::where("is_deleted", Santri::active)->get();
+        $model = Santri::active()->get();
         return view('admin.santri.index', compact('model',"year"));
     }
 
@@ -42,7 +42,7 @@ class SantriController extends Controller
 
     public function show($id)
     {
-        $santri = Santri::where('santri_id', $id)->first();
+        $santri = Santri::where('santri_id', $id)->active()->first();
         if($santri){
             return view('admin.santri.show', compact("santri"));
         } else {
@@ -50,94 +50,35 @@ class SantriController extends Controller
         }
     }
 
-    public function detail($id, $yearSearch = '')
+    public function detail($id)
     {
-        $item  = [];
-        $month = [];
-        $year  = [];
-        $mName = [
-            1 => "Januari",
-            2 => "Februari",
-            3 => "Maret",
-            4 => "April",
-            5 => "Mei",
-            6 => "Juni",
-            7 => "Juli",
-            8 => "Agustus",
-            9 => "September",
+        $transactionItem = TransactionItem::with('paymenttype')
+                            ->whereHas('transaction', function($transaction) use ($id){
+                                $transaction->where('santri_id', $id)->active();
+                            })
+                            ->orderBy('transaction_year', 'DESC')
+                            ->orderBy('transaction_month', 'ASC')
+                            ->get()
+                            ->groupBy(function($date){
+                                return $date->transaction_year;
+                            });
+
+        $month = [
+            1  => "Januari",
+            2  => "Februari",
+            3  => "Maret",
+            4  => "April",
+            5  => "Mei",
+            6  => "Juni",
+            7  => "Juli",
+            8  => "Agustus",
+            9  => "September",
             10 => "Oktober",
             11 => "November",
             12 => "Desember"
         ];
 
-        $transaction = Transaction::where('santri_id', $id)->where('is_deleted', Transaction::active)->get();
-
-        if(!empty($transaction) && $transaction){
-            foreach ($transaction as $value) {
-                if(empty($yearSearch)){
-                    $item[] = TransactionItem::with('paymenttype')
-                                            ->where('transaction_id', $value->transaction_id)
-                                            ->whereHas('paymenttype', function($query) {
-                                                $query->where('payment_type_name', 'SPP');
-                                                $query->orWhere('payment_type_name', 'SPp');
-                                                $query->orWhere('payment_type_name', 'Spp');
-                                                $query->orWhere('payment_type_name', 'sPP');
-                                                $query->orWhere('payment_type_name', 'sPp');
-                                                $query->orWhere('payment_type_name', 'spp');
-                                            })
-                                            ->get();
-                } else {
-                    $item[] = TransactionItem::with('paymenttype')
-                                            ->where('transaction_id', $value->transaction_id)
-                                            ->where("transaction_year", $yearSearch)
-                                            ->whereHas('paymenttype', function($query) {
-                                                $query->where('payment_type_name', 'SPP');
-                                                $query->orWhere('payment_type_name', 'SPp');
-                                                $query->orWhere('payment_type_name', 'Spp');
-                                                $query->orWhere('payment_type_name', 'sPP');
-                                                $query->orWhere('payment_type_name', 'sPp');
-                                                $query->orWhere('payment_type_name', 'spp');
-                                            })
-                                            ->get();
-                }
-            }
-
-            if(!empty($item)){
-                foreach ($item as $items) {
-                    foreach ($items as $value) {
-                        $month[] = $value->transaction_month;
-                        $year[]  = $value->transaction_year;
-                    }
-                }
-
-                foreach ($month as $key => $value) {
-                    if($value == 0){
-                        unset($month[$key]);
-                    }
-                }
-
-                foreach ($year as $key => $value) {
-                    if($value == 0){
-                        unset($year[$key]);
-                    }
-                }
-
-                $month = array_values($month);
-                $year  = array_values($year);
-            }
-        }
-
-        $data = [];
-        foreach ($month as $key => $value) {
-            $data[] = ["month" => $mName[$month[$key]], "year" => $year[$key]];
-        }
-
-        $result = [
-            "santri_id" => $id,
-            "data"      => $data,
-        ];
-        
-        return Response::json($result);
+        return view('admin.santri.detail', compact("transactionItem", "month"));
     }
 
     /**
@@ -162,7 +103,7 @@ class SantriController extends Controller
      */
     public function edit($id)
     {
-        $santri  = Santri::where("santri_id", $id)->where("is_deleted", "=", Santri::active)->firstOrFail();
+        $santri  = Santri::where("santri_id", $id)->active()->firstOrFail();
         $gender  = Santri::dropdownGender();
 
         $santri->santri_birth_date = Carbon::parse($santri->santri_birth_date)->format('d-m-Y');
@@ -195,7 +136,7 @@ class SantriController extends Controller
      */
     public function destroy($id)
     {
-        $santri = Santri::where("santri_id", $id)->where("is_deleted", "=", Santri::active)->firstOrFail();
+        $santri = Santri::where("santri_id", $id)->active()->firstOrFail();
         if($santri){
             Santri::where("santri_id", $id)->update(["is_deleted" => Santri::deactive]);
             return redirect()->route('admin.santri.index');

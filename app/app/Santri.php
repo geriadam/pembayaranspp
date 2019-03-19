@@ -79,6 +79,16 @@ class Santri extends Model
         ];
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_deleted', self::active);
+    }
+
+    public function scopeDeactive($query)
+    {
+        return $query->where('is_deleted', self::deactive);
+    }
+
     public static function getDataThisWeek()
     {
         $fromDate  = DateHelper::rangeWeek(Carbon::today()->toDateString())['start'];

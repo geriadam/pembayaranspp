@@ -102,22 +102,24 @@ class UserController extends Controller
         if ($validator->fails()) 
             return redirect()->route('admin.user.edit', ["id" => $id])->withErrors($validator)->withInput(); 
 
-        $request->request->add(["password" => bcrypt($request->password)]);
+        if(!empty($request->password)){
+            $email = User::find($id)->email;
+            $request->request->add(["password" => bcrypt($request->password)]);
+        }
+        
         $model = User::find($id)->update($request->except('_token'));
-
-        $email = User::find($id)->email;
-        if($email == Session::get('email')){
+        if(isset($email) && $email == Session::get('email')){
             return redirect()->route('admin.logout');
         }
         return redirect()->route('admin.user.index');
     }
 
-    /*public function registerPost(Request $request){
+    public function registerPost(Request $request){
         $data =  new User();
         $data->name = "admin";
         $data->email = "admin@admin.com";
         $data->password = bcrypt("admin");
         $data->save();
         return redirect('login')->with('alert-success','Kamu berhasil Register');
-    }*/
+    }
 }

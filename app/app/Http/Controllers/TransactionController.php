@@ -23,9 +23,9 @@ class TransactionController extends Controller
      */
     public function index($id = null)
     {
-        $model = Transaction::with('santri')->where("is_deleted", Transaction::active)->get();
+        $model = Transaction::with('santri')->active()->orderBy('created_at', 'DESC')->get();
         if(!empty($id) && $id != "")
-            $model = Transaction::with('santri')->where("is_deleted", Transaction::active)->where('santri_id', $id)->get();
+            $model = Transaction::with('santri')->active()->where('santri_id', $id)->get();
         
         return view('admin.transaction.index', compact('model'));
     }
@@ -36,28 +36,11 @@ class TransactionController extends Controller
      */
     public function create()
     {
-    	$santri      = Transaction::dropdownSantri();
-        $paymenttype = TransactionItem::dropdownPaymentType()->prepend('Pilih', 0);
-        $month    = [
-            0 => "Pilih",
-            1 => "Januari",
-            2 => "Februari",
-            3 => "Maret",
-            4 => "April",
-            5 => "Mei",
-            6 => "Juni",
-            7 => "Juli",
-            8 => "Agustus",
-            9 => "September",
-            10 => "Oktober",
-            11 => "November",
-            12 => "Desember"
-        ];
-        $year[0] = "Pilih";
-        for ($i = date('Y'); $i >= date('Y') - 10; $i--){
-            $year[$i] = $i;
-        }
-        return view("admin.transaction.create", compact('santri','paymenttype','month','year'));
+        $santri              = Transaction::dropdownSantri();
+        $dropDownPaymentType = TransactionItem::dropdownPaymentType()->prepend('Pilih', 0);
+        $paymentType         = PaymentType::active()->get();
+        
+        return view("admin.transaction.create", compact('santri','paymentType','dropDownPaymentType'));
     }
 
     /**
@@ -67,6 +50,8 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        $transaction_total = 0;
+        $total             = 0;
     	$validator = Validator::make($request->except('_token'), Transaction::rules(), Transaction::message());
         if ($validator->fails()) 
             return redirect()->route('admin.transaction.create')->withErrors($validator)->withInput();	
@@ -74,27 +59,34 @@ class TransactionController extends Controller
         $request->request->add([
             'transaction_number' => CodeHelper::getLatestNumber("TR", "transaction_number", 'transaction'),
             'transaction_date'   => date('Y-m-d H:i:s'),
+            'transaction_total'  => $transaction_total,
         ]);
 
         DB::beginTransaction();
-            $paymenttype = Transaction::create($request->except('_token'));
+            $transaction = Transaction::create($request->all());
             if($request->payment_type_id):
-                foreach($request->payment_type_id as $i => $val):
-                    $model = TransactionItem::create([
-                        "transaction_id"    => $paymenttype->transaction_id,
-                        "payment_type_id"   => $request->payment_type_id[$i],
-                        "transaction_month" => $request->transaction_month[$i],
-                        "transaction_year"  => $request->transaction_year[$i],
-                        "transaction_price" => $request->transaction_price[$i],
-                    ]);
+                foreach($request->transaction_month as $payment_type_id => $array_month):
+                    $paymentType = PaymentType::find($payment_type_id);
+                    foreach ($array_month as $month) {
+                        $model = TransactionItem::create([
+                            "transaction_id"    => $transaction->transaction_id,
+                            "payment_type_id"   => $payment_type_id,
+                            "transaction_month" => $month,
+                            "transaction_year"  => $request->transaction_year,
+                            "transaction_price" => $paymentType->payment_type_price,
+                        ]);
+                        $total += $paymentType->payment_type_price;
+                    }
                 endforeach;
+                $transaction_total = $total;
+                $transaction->update(["transaction_total" => $transaction_total]);
             endif;
         DB::commit();
 
         if($request->submit == 'save'){
             return redirect()->route('admin.transaction.index');
         } else {
-            return redirect()->route('admin.transaction.print', ['id' => $paymenttype->transaction_id]);
+            return redirect()->route('admin.transaction.print', ['id' => $transaction->transaction_id]);
         }
     }
 
@@ -102,15 +94,15 @@ class TransactionController extends Controller
     {
         $model = TransactionItem::with('paymenttype')->where('transaction_id', $id)->get();
         $month = [
-            1 => "Januari",
-            2 => "Februari",
-            3 => "Maret",
-            4 => "April",
-            5 => "Mei",
-            6 => "Juni",
-            7 => "Juli",
-            8 => "Agustus",
-            9 => "September",
+            1  => "Januari",
+            2  => "Februari",
+            3  => "Maret",
+            4  => "April",
+            5  => "Mei",
+            6  => "Juni",
+            7  => "Juli",
+            8  => "Agustus",
+            9  => "September",
             10 => "Oktober",
             11 => "November",
             12 => "Desember"
@@ -129,7 +121,7 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        $transaction = Transaction::where("transaction_id", $id)->where("is_deleted", "=", Transaction::active)->firstOrFail();
+        $transaction = Transaction::where("transaction_id", $id)->active()->firstOrFail();
         if($transaction){
             Transaction::where("transaction_id", $id)->update(["is_deleted" => Transaction::deactive]);
             return redirect()->route('admin.transaction.index');
@@ -141,12 +133,13 @@ class TransactionController extends Controller
     // Opotional
     public function getPaymentType($id)
     {
-        $model  = PaymentType::where("payment_type_id", $id)->get();
+        $model  = PaymentType::where("payment_type_id", $id)->first();
         $result = [
-                    "payment_type_id" => $model[0]->payment_type_id, 
-                    "payment_type_price" => $model[0]->payment_type_price, 
-                    "payment_type_unit" => $model[0]->payment_type_unit
+                    "payment_type_id"    => $model->payment_type_id, 
+                    "payment_type_price" => $model->payment_type_price, 
+                    "payment_type_unit"  => $model->payment_type_unit
                 ];
+
         return Response::json($result);
     }
 
@@ -155,15 +148,15 @@ class TransactionController extends Controller
         $model   = Transaction::with('santri')->where('transaction_id', $id)->first();
         $profile = PesantrenProfile::first();
         $month   = [
-            1 => "Januari",
-            2 => "Februari",
-            3 => "Maret",
-            4 => "April",
-            5 => "Mei",
-            6 => "Juni",
-            7 => "Juli",
-            8 => "Agustus",
-            9 => "September",
+            1  => "Januari",
+            2  => "Februari",
+            3  => "Maret",
+            4  => "April",
+            5  => "Mei",
+            6  => "Juni",
+            7  => "Juli",
+            8  => "Agustus",
+            9  => "September",
             10 => "Oktober",
             11 => "November",
             12 => "Desember"
