@@ -46,4 +46,58 @@ $(document).on('click', '#delete-btn', function(e) {
      });
 });
 </script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#sProvince').on('change', function(){
+            $('#sRegencie').html('');
+            var CSRF_TOKEN = $('input[name="_token"]').val();
+            $.ajax({
+                url: '{{ route('dropdownAddress') }}',
+                type: 'POST',
+                data: {_token: CSRF_TOKEN, type: 'kabupaten', id: $('#sProvince').val()},
+                success: function(e){
+                    $('#sRegencie').html(e);
+                    $('#sDistrict').html('');
+                    $('#sVillage').html('');
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });        
+        });
+        $('#sRegencie').on('change', function(){
+            $('#sDistrict').html('');
+            var CSRF_TOKEN = $('input[name="_token"]').val();
+            $.ajax({
+                url: '{{ route('dropdownAddress') }}',
+                type: 'POST',
+                data: {_token: CSRF_TOKEN, type: 'kecamatan', id: $('#sRegencie').val()},
+                success: function(e){
+                    $('#sDistrict').html(e);
+                    $('#sVillage').html('');
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        });
+        $('#sDistrict').on('change', function(){
+            $('#sVillage').html('');
+            var CSRF_TOKEN = $('input[name="_token"]').val();
+            $.ajax({
+                url: '{{ route('dropdownAddress') }}',
+                type: 'POST',
+                data: {_token: CSRF_TOKEN, type: 'kelurahan', id: $('#sDistrict').val()},
+                success: function(e){
+                    console.log($('#sDistrict').val());
+                    $('#sVillage').html(e);
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        });
+    });
+</script>
+
 

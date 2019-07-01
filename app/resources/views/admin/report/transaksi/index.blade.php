@@ -39,7 +39,10 @@
         <div class="ibox">
             <div class="ibox-title">
                 <a href="{{ route('admin.report.transaksi.export') }}" target="_blank">
-                    <button type="button" class="btn btn-primary">Export</button>
+                    <button type="button" class="btn btn-primary">Export PDF</button>
+                </a>
+                <a href="{{ route('admin.report.transaksi.export.excel') }}" target="_blank">
+                    <button type="button" class="btn btn-primary">Export Excel</button>
                 </a>
             </div>
             <div class="ibox-content">

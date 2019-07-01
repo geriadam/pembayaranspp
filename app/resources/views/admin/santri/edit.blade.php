@@ -72,6 +72,22 @@
             <strong>Alamat</strong>
             {!! Form::textarea('santri_address', $santri->santri_address, ["class" => "form-control meta-desc"]) !!}
         </div>
+        <div class="form-group">
+            <strong>Provinsi*</strong>
+            {!! Form::select('province_id', $province, null, ["class" => "form-control select2-select", "id" => "sProvince"]) !!}
+        </div>
+        <div class="form-group">
+            <strong>Kabupaten*</strong>
+            {!! Form::select('regencie_id', [], null, ["class" => "form-control select2-select", "id" => "sRegencie"]) !!}
+        </div>
+        <div class="form-group">
+            <strong>Kecamatan*</strong>
+            {!! Form::select('district_id', [], null, ["class" => "form-control select2-select", "id" => "sDistrict"]) !!}
+        </div>
+        <div class="form-group">
+            <strong>Kelurahan*</strong>
+            {!! Form::select('village_id', [], null, ["class" => "form-control select2-select", "id" => "sVillage"]) !!}
+        </div>
       </div>
     </div>
 

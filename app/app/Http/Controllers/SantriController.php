@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Santri;
 use App\Transaction;
 use App\TransactionItem;
+use App\Provinces;
+use App\Regencies;
+use App\Districts;
+use App\Villages;
 use Carbon\Carbon;
 use Datatables;
 use Validator;
@@ -35,8 +39,10 @@ class SantriController extends Controller
      */
     public function create()
     {
-    	$gender = Santri::dropdownGender();
-        return view("admin.santri.create", compact('gender'));
+        $gender   = Santri::dropdownGender();
+        $province = Provinces::provinces();
+
+        return view("admin.santri.create", compact('gender','province'));
     }
 
 
@@ -103,12 +109,17 @@ class SantriController extends Controller
      */
     public function edit($id)
     {
-        $santri  = Santri::where("santri_id", $id)->active()->firstOrFail();
-        $gender  = Santri::dropdownGender();
+        $santri   = Santri::where("santri_id", $id)->active()->firstOrFail();
+        $gender   = Santri::dropdownGender();
+        $province = Provinces::provinces();
+        $regencie = Regencies::where('province_id', isset($user->usermeta->province_id) ? $user->usermeta->province_id : 0)->pluck('name', 'id');
+        $district = Districts::where('regency_id', isset($user->usermeta->regencie_id) ? $user->usermeta->regencie_id : 0)->pluck('name', 'id');
+        $village  = Villages::where('district_id', isset($user->usermeta->district_id) ? $user->usermeta->district_id : 0)->pluck('name', 'id');
 
         $santri->santri_birth_date = Carbon::parse($santri->santri_birth_date)->format('d-m-Y');
+        
         if($santri){
-            return view('admin.santri.edit', compact("santri","gender"));
+            return view('admin.santri.edit', compact("santri","gender",'province','regencie','district','village'));
         } else {
             abort(404);
         }

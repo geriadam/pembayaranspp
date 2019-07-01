@@ -78,6 +78,7 @@ Route::group(['prefix' => 'admin'], function(){
 	    Route::get('/transaksi', 'ReportController@transaksi')->name('admin.report.transaksi.index');
 	    Route::get('/transaksi/search', 'ReportController@transaksiSearch')->name('admin.report.transaksi.search');
 	    Route::get('/transaksi/export', 'ReportController@transaksiExport')->name('admin.report.transaksi.export');
+	    Route::get('/transaksi/export/excel', 'ReportController@transaksiExportExcel')->name('admin.report.transaksi.export.excel');
 	});
 
 	// Route Menu User
@@ -100,4 +101,7 @@ Route::group(['prefix' => 'admin'], function(){
 	    Route::put('/update/{id}', 'PesantrenProfileController@update')->name("admin.pesantrenprofile.update");
 	    Route::get('/destroy/{id}', 'PesantrenProfileController@destroy')->name("admin.pesantrenprofile.destroy");
 	});
+
+	// Dropdown Daerah
+    Route::post('/dropdownDaerah', 'DropdownAddressController@postDropdown')->name('dropdownAddress');
 });

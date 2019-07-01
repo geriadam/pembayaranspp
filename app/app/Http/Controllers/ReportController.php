@@ -160,4 +160,32 @@ class ReportController extends Controller
         $pdf =  PDF::loadView('admin.report.transaksi.export', compact("model","filter","profile","total"));
         return $pdf->stream();
     }
+
+    public function transaksiExportExcel()
+    {
+        $filter  = Session::get('filterSessionTransaksi');
+        $profile = PesantrenProfile::first();
+        $model   = Transaction::query()->active();
+        $model   = $model->with('santri');
+
+        if(isset($filter['santri_id']) && !empty($filter['santri_id'])){
+            $model = $model->where('santri_id', $filter['santri_id']);
+        }
+
+        if(isset($filter['transaction_number']) && !empty($filter['transaction_number'])){
+            $model = $model->where('transaction_number', $filter['transaction_number']);
+        }
+
+        if(isset($filter['start_date']) && !empty($filter['start_date'])){
+            $model = $model->whereDate('transaction_date', ">=", Carbon::parse($filter['start_date'])->format('Y-m-d'));
+        }
+
+        if(isset($filter['end_date']) && !empty($filter['end_date'])){
+            $model = $model->whereDate('transaction_date', "<=", Carbon::parse($filter['end_date'])->format('Y-m-d'));
+        }
+
+        $model = $model->get();
+        $total = $model->sum('transaction_total');
+        return view('admin.report.transaksi.excel', compact("model","filter","profile","total"));
+    }
 }

@@ -192,7 +192,6 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         // Highchart
         RezaAr\Highcharts\Provider::class,
-
     ],
 
     /*

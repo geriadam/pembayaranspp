@@ -11,7 +11,7 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
         "laravelista/ekko": "^1.5",
-        "maatwebsite/excel": "2.1.25",
+        "maatwebsite/excel": "2.1.15",
         "muhamadrezaar/highcharts": "dev-master",
         "unisharp/laravel-ckeditor": "^4.7",
         "uxweb/sweet-alert": "^1.4",
